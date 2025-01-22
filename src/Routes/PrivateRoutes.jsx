@@ -1,10 +1,9 @@
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthContext";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import loadingEffect from '../assets/undraw_loading_65y2.svg'
+import { Navigate, useLocation } from "react-router-dom";
+import loadingEffect from '../assets/loadingEffects.svg'
 
 const PrivateRoutes = ({children}) => {
- const navigate = useNavigate();
  const location = useLocation();
  const { userStatus, loadingStatus} = useContext(AuthContext);
 
@@ -14,7 +13,7 @@ const PrivateRoutes = ({children}) => {
  if(userStatus){
   return children;
  }
- return <Navigate to="/login" state={{from: location}}></Navigate>
+ return <Navigate to="/login" state={{from: location}} replace></Navigate>
 };
 
 export default PrivateRoutes;

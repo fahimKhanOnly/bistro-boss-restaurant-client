@@ -1,10 +1,13 @@
 import React, { useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../provider/AuthContext';
 import { toast } from 'react-toastify';
+import { FaShoppingCart } from "react-icons/fa";
+
+
 
 const NavBar = () => {
-  const {userStatus, logout} = useContext(AuthContext);
+  const { userStatus, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const logoutHandler = () => {
     logout().then(() => {
@@ -21,7 +24,16 @@ const NavBar = () => {
     <li><NavLink to="/secret">Secret</NavLink></li>
 
     {
-      !userStatus ? <li><NavLink to="/login">Login</NavLink></li> : <li><button onClick={logoutHandler} className="btn btn-sm">Logout</button></li>
+      !userStatus ? <li><NavLink to="/login">Login</NavLink></li> : <>
+        <li><button onClick={logoutHandler} className="btn btn-sm">Logout</button></li>
+
+        <Link to="/">
+          <button className="btn btn-sm">
+            <FaShoppingCart />
+            <div className="badge badge-secondary">0</div>
+          </button>
+        </Link>
+      </>
     }
   </>;
 
@@ -53,7 +65,7 @@ const NavBar = () => {
           <a className="btn btn-ghost text-xl">Bistro Boss</a>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">
+          <ul className="menu space-x-3 menu-horizontal px-1">
             {navItems}
           </ul>
         </div>

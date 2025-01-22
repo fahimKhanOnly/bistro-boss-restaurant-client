@@ -1,15 +1,19 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
 import { AuthContext } from '../../provider/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 
 
 
 const Login = () => {
- const {signIn, userStatus} = useContext(AuthContext);
+ const { signIn, userStatus } = useContext(AuthContext);
  const [btnStatus, setBtnStatus] = useState(true);
  const navigate = useNavigate();
+ const location = useLocation();
+ const from = location.state?.from?.pathname || "/";
+
  useEffect(() => {
   loadCaptchaEnginge(6);
  }, [])
@@ -23,17 +27,28 @@ const Login = () => {
   console.log(email, pass);
 
   signIn(email, pass)
-  .then(result => result && navigate("/"))
+   .then(result => {
+    Swal.fire({
+     title: 'User Login Successful.',
+     showClass: {
+      popup: 'animate__animated animate__fadeInDown'
+     },
+     hideClass: {
+      popup: 'animate__animated animate__fadeOutUp'
+     }
+    });
+    navigate(from, {replace: true})
+   })
  }
 
  const captchaHandler = (e) => {
   console.log(e.target.value);
   const user_captcha = e.target.value;
-  if(validateCaptcha(user_captcha)){
+  if (validateCaptcha(user_captcha)) {
    console.log("Captcha matched.");
    setBtnStatus(false);
   }
-  else{
+  else {
    setBtnStatus(true);
   }
  }

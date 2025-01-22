@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { auth } from "../firebase/firebase.config";
 
@@ -12,7 +12,6 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const userUnmount = onAuthStateChanged(auth, currentUser => {
       setUserStatus(currentUser);
-      console.log('current User', currentUser);
       setLoading(false);
     });
     return () => {

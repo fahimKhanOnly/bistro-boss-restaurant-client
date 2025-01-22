@@ -2,6 +2,8 @@ import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form"
 import { AuthContext } from "../../provider/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { updateProfile } from "firebase/auth";
+import { auth } from "../../firebase/firebase.config";
 
 
 const Register = () => {
@@ -15,7 +17,9 @@ const Register = () => {
  const onSubmit = (data) => {
   createUser(data.email, data.password)
   .then(result => {
-   console.log(result.user);
+   updateProfile(auth.currentUser, {
+    displayName: data.name,
+   })
    result.user && navigate("/");
   })
  }
