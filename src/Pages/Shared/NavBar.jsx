@@ -3,11 +3,13 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../provider/AuthContext';
 import { toast } from 'react-toastify';
 import { FaShoppingCart } from "react-icons/fa";
+import useCart from '../../hooks/useCart';
 
 
 
 const NavBar = () => {
   const { userStatus, logout } = useContext(AuthContext);
+  const [cart] = useCart();
   const navigate = useNavigate();
   const logoutHandler = () => {
     logout().then(() => {
@@ -16,6 +18,7 @@ const NavBar = () => {
     })
   }
 
+  console.log(cart);
   const navItems = <>
     <li><NavLink to="/">Home</NavLink></li>
     <li><NavLink to="/dashboard">Dashboard</NavLink></li>
@@ -27,10 +30,10 @@ const NavBar = () => {
       !userStatus ? <li><NavLink to="/login">Login</NavLink></li> : <>
         <li><button onClick={logoutHandler} className="btn btn-sm">Logout</button></li>
 
-        <Link to="/">
+        <Link to="/dashboard/cart">
           <button className="btn btn-sm">
             <FaShoppingCart />
-            <div className="badge badge-secondary">0</div>
+            <div className="badge badge-secondary">{cart.length}</div>
           </button>
         </Link>
       </>
