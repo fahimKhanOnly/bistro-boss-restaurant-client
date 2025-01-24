@@ -4,11 +4,14 @@ import { AuthContext } from "../../provider/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
 import { auth } from "../../firebase/firebase.config";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import Swal from "sweetalert2";
 
 
 const Register = () => {
  const navigate = useNavigate();
- const {createUser, userStatus} = useContext(AuthContext);
+ const { createUser, userStatus } = useContext(AuthContext);
+ const axiosPublic = useAxiosPublic();
  const { register, handleSubmit, formState: { errors }, } = useForm()
 
  useEffect(() => {
@@ -16,12 +19,27 @@ const Register = () => {
  }, []);
  const onSubmit = (data) => {
   createUser(data.email, data.password)
-  .then(result => {
-   updateProfile(auth.currentUser, {
-    displayName: data.name,
+   .then(result => {
+    updateProfile(auth.currentUser, {
+     displayName: data.name,
+    }).then(() => {
+     const userInfo = { name: data.name, email: data.email };
+     axiosPublic.post('/users', userInfo)
+      .then(result => {
+       console.log(result);
+       if (result.data.insertedId) {
+        Swal.fire({
+         position: "top-end",
+         icon: "success",
+         title: "Your work has been saved",
+         showConfirmButton: false,
+         timer: 1500
+        });
+       }
+      })
+    })
+    result.user && navigate("/");
    })
-   result.user && navigate("/");
-  })
  }
 
  return (
@@ -55,14 +73,14 @@ const Register = () => {
         <label className="label">
          <span className="label-text">Password</span>
         </label>
-        <input {...register("password", { required: true, minLength: 4, maxLength: 12 , pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{4,12}$/})} type="password" name="password" placeholder="password" className="input input-bordered" />
+        <input {...register("password", { required: true, minLength: 4, maxLength: 12, pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{4,12}$/ })} type="password" name="password" placeholder="password" className="input input-bordered" />
         {errors.password && <span className="text-red-500">This field is required</span>}
         {errors.password?.type === 'minLength' && <span className="text-red-500">Password must be at least 4 characters</span>}
        </div>
 
        <div className="form-control mt-6">
         <button className="btn btn-primary">Sign Up</button>
-       </div>  
+       </div>
       </form>
      </div>
     </div>

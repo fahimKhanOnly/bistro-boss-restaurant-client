@@ -18,7 +18,6 @@ const NavBar = () => {
     })
   }
 
-  console.log(cart);
   const navItems = <>
     <li><NavLink to="/">Home</NavLink></li>
     <li><NavLink to="/dashboard">Dashboard</NavLink></li>
